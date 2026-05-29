@@ -29,14 +29,3 @@ jobs:
                       dist/bright-sdk-downloader-macos-x64
                       dist/bright-sdk-downloader-macos-arm64
                       dist/bright-sdk-downloader-win-x64.exe
-
-            - name: Push to packages repo
-              run: |
-                  cd releases
-                  git init
-                  git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/BrightSDK/packages.git
-                  git fetch origin bright-sdk-downloader --depth=1 || true
-                  git checkout -B bright-sdk-downloader
-                  git add -A
-                  git commit -m "release: bright-sdk-downloader ${{ github.ref_name }}"
-                  git push -f origin bright-sdk-downloader

@@ -18,7 +18,7 @@ jobs:
               run: npm run build
 
             - name: Organize releases
-              run: npx release-manager -a 'dist/bright-sdk-downloader-*' -o releases
+              run: npx github:BrightSDK/release-manager -a 'dist/bright-sdk-downloader-*' -o releases
 
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2

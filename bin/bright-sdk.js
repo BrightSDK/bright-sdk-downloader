@@ -2,6 +2,7 @@
 // LICENSE_CODE ZON
 'use strict'; /*jslint node:true es9:true*/
 const { resolve_sdk, fetch_sdk, list_platforms } = require('../src/index.js');
+const createProgressTracker = require('brd-ono-util-progress-tracker-cli');
 
 const parse_args = args => {
     const result = { platform: null, version: 'latest', output: '.' };
@@ -44,15 +45,28 @@ const run = async () => {
                 );
                 process.exit(1);
             }
-            process.stderr.write(
-                `Fetching ${argv.platform}@${argv.version}...\n`,
-            );
+            const tracker = createProgressTracker({
+                name: `sdk-fetch-${argv.platform}`,
+                summary: { enabled: true, detailed: false },
+            });
+            tracker.start();
+            const steps = {
+                resolve: { name: 'resolve', endPercentage: 5 },
+                download: { name: 'download', endPercentage: 90 },
+                extract: { name: 'extract', endPercentage: 100 },
+            };
             const result = await fetch_sdk(
                 argv.platform,
                 argv.version,
                 argv.output,
+                {
+                    on_step: step => {
+                        if (steps[step]) tracker.updateStep(steps[step]);
+                    },
+                },
             );
-            process.stderr.write(`Done → ${result.output}\n`);
+            tracker.finish({ message: `Done → ${result.output}` });
+            tracker.summary();
             process.stdout.write(JSON.stringify(result) + '\n');
             break;
         }

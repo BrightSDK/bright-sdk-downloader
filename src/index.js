@@ -131,7 +131,13 @@ const extract = async (archive_path, out_dir) => {
     else await unzip(archive_path, out_dir);
 };
 
-const fetch_sdk = async (platform_key, version = 'latest', output = '.') => {
+const fetch_sdk = async (
+    platform_key,
+    version = 'latest',
+    output = '.',
+    { on_step } = {},
+) => {
+    on_step && on_step('resolve');
     const resolved = await resolve_sdk(platform_key, version);
     const out_dir = path.resolve(output);
     await fs.ensureDir(out_dir);
@@ -143,9 +149,12 @@ const fetch_sdk = async (platform_key, version = 'latest', output = '.') => {
         out_dir,
         `brightsdk-${platform_key}-${resolved.version}${ext}`,
     );
+    on_step && on_step('download');
     await download_from_url(resolved.url, archive_path);
+    on_step && on_step('extract');
     await extract(archive_path, out_dir);
     await fs.remove(archive_path);
+    on_step && on_step('done');
     return { ...resolved, output: out_dir };
 };
 

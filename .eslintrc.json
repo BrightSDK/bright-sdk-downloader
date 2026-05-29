@@ -1,0 +1,33 @@
+{
+    "root": true,
+    "env": {
+        "node": true,
+        "es2022": true,
+        "mocha": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "script"
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:n/recommended",
+        "plugin:promise/recommended",
+        "prettier"
+    ],
+    "globals": {
+        "expect": "readonly"
+    },
+    "rules": {
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "no-console": "off",
+        "prefer-const": "error",
+        "no-var": "error",
+        "eqeqeq": "off",
+        "curly": "off",
+        "no-throw-literal": "error",
+        "n/no-process-exit": "off",
+        "n/no-unpublished-require": "off",
+        "promise/always-return": "off"
+    }
+}

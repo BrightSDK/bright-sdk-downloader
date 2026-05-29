@@ -10,7 +10,8 @@ const S_IFLNK = 0o120000;
 
 function findEOCD(buf) {
     for (let i = buf.length - 22; i >= 0; i--) {
-        if (buf.readUInt32LE(i) === 0x06054b50) // EOCD
+        if (buf.readUInt32LE(i) === 0x06054b50)
+            // EOCD
             return i;
     }
     return -1;
@@ -20,8 +21,7 @@ function readZipUnixModes(zipPath) {
     const b = fs.readFileSync(zipPath);
 
     const eocd = findEOCD(b);
-    if (eocd < 0)
-        throw new Error('EOCD not found');
+    if (eocd < 0) throw new Error('EOCD not found');
 
     const cdSize = b.readUInt32LE(eocd + 12);
     const cdOff = b.readUInt32LE(eocd + 16);
@@ -45,8 +45,7 @@ function readZipUnixModes(zipPath) {
 
         const name = b.slice(p + 46, p + 46 + nameLen).toString('utf8');
 
-        if (platform === 3 && mode)
-            modes.set(name, mode);
+        if (platform === 3 && mode) modes.set(name, mode);
 
         p = p + 46 + nameLen + extraLen + commentLen;
     }
@@ -73,7 +72,7 @@ async function unzip(fname, dst) {
     const dstAbs = path.resolve(dst);
 
     const rs = fs.createReadStream(fname);
-    const parser = rs.pipe(unzipper.Parse({forceStream: true}));
+    const parser = rs.pipe(unzipper.Parse({ forceStream: true }));
 
     for await (const entry of parser) {
         const relPath = entry.path.replace(/\\/g, '/');
@@ -93,9 +92,14 @@ async function unzip(fname, dst) {
         if (isSymlinkEntry(relPath, modes)) {
             const buf = await entry.buffer();
             const linkTarget = buf.toString('utf8').replace(/\0/g, '');
-            const resolvedTarget = path.resolve(path.dirname(outPath), linkTarget);
+            const resolvedTarget = path.resolve(
+                path.dirname(outPath),
+                linkTarget,
+            );
             if (!isPathInside(dstAbs, resolvedTarget)) {
-                throw new Error(`Symlink escape detected: ${relPath} -> ${linkTarget}`);
+                throw new Error(
+                    `Symlink escape detected: ${relPath} -> ${linkTarget}`,
+                );
             }
             await fs.ensureDir(path.dirname(outPath));
             await fs.remove(outPath);
@@ -113,8 +117,7 @@ async function unzip(fname, dst) {
         });
 
         const mode = getUnixMode(relPath, modes);
-        if (mode)
-            await fs.chmod(outPath, mode & 0o777);
+        if (mode) await fs.chmod(outPath, mode & 0o777);
     }
 }
 

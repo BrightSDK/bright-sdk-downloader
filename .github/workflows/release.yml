@@ -1,23 +1,41 @@
 name: Release
 on:
-  push:
-    tags: ['v*']
+    push:
+        tags: ['v*']
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-      - run: npm ci
-      - run: npx pkg bin/bright-sdk.js --targets node18-linux-x64,node18-macos-x64,node18-macos-arm64,node18-win-x64 --out-path dist --compress Brotli
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/bright-sdk-linux-x64
-            dist/bright-sdk-macos-x64
-            dist/bright-sdk-macos-arm64
-            dist/bright-sdk-win-x64.exe
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '18'
+            - run: npm ci
+
+            - name: Build all platforms
+              run: npm run build
+
+            - name: Organize releases
+              run: npx release-manager -a 'dist/bright-sdk-downloader-*' -o releases
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: |
+                      dist/bright-sdk-downloader-linux-x64
+                      dist/bright-sdk-downloader-macos-x64
+                      dist/bright-sdk-downloader-macos-arm64
+                      dist/bright-sdk-downloader-win-x64.exe
+
+            - name: Push to packages repo
+              run: |
+                  cd releases
+                  git init
+                  git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/BrightSDK/packages.git
+                  git fetch origin bright-sdk-downloader --depth=1 || true
+                  git checkout -B bright-sdk-downloader
+                  git add -A
+                  git commit -m "release: bright-sdk-downloader ${{ github.ref_name }}"
+                  git push -f origin bright-sdk-downloader

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-05-29
+
+### Added
+- Real-time progress bar with ETA during `fetch` (via progress-tracker-cli)
+- Step-based progress: resolve (0→5%) → download (5→90%) → extract (90→100%)
+- History-based ETA that improves accuracy on repeat runs
+- Timing summary after download completes
+
+### Changed
+- `fetch_sdk()` accepts optional `on_step` callback for progress hooks
+
 ## [1.0.0] - 2026-05-29
 
 ### Added

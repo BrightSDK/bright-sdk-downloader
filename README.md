@@ -2,9 +2,10 @@
 
 > BrightSDK download CLI — resolve versions, fetch and extract SDK archives.
 
-[![E2E](https://github.com/BrightSDK/bright-sdk-download/actions/workflows/e2e.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-download/actions/workflows/e2e.yml)
-[![Lint](https://github.com/BrightSDK/bright-sdk-download/actions/workflows/lint.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-download/actions/workflows/lint.yml)
-[![Test](https://github.com/BrightSDK/bright-sdk-download/actions/workflows/test.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-download/actions/workflows/test.yml)
+[![E2E](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/e2e.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/e2e.yml)
+[![Lint](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/lint.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/lint.yml)
+[![Test](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/test.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/test.yml)
+[![Release](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/release.yml/badge.svg)](https://github.com/BrightSDK/bright-sdk-downloader/actions/workflows/release.yml)
 
 ## Demo
 

@@ -1,0 +1,30 @@
+{
+  "name": "bright-sdk-download",
+  "version": "1.0.0",
+  "description": "BrightSDK download CLI — resolve versions, fetch and extract SDK archives",
+  "main": "src/index.js",
+  "bin": {
+    "bright-sdk": "bin/bright-sdk.js"
+  },
+  "pkg": {
+    "scripts": ["src/**/*.js"],
+    "targets": [
+      "node18-linux-x64",
+      "node18-macos-x64",
+      "node18-macos-arm64",
+      "node18-win-x64"
+    ],
+    "outputPath": "dist"
+  },
+  "scripts": {
+    "test": "node test/test.js",
+    "build": "pkg bin/bright-sdk.js --compress Brotli"
+  },
+  "author": "vladislavs@brightdata.com",
+  "license": "ISC",
+  "dependencies": {
+    "follow-redirects": "^1.15.6",
+    "fs-extra": "^11.2.0",
+    "unzipper": "^0.12.3"
+  }
+}

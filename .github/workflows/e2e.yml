@@ -1,0 +1,41 @@
+name: E2E
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    environment: e2e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci
+      - name: resolve (android)
+        run: node bin/bright-sdk.js resolve -p android
+        env:
+          SDK_API_KEY: ${{ secrets.SDK_API_KEY }}
+      - name: resolve (tizen)
+        run: node bin/bright-sdk.js resolve -p tizen
+        env:
+          SDK_API_KEY: ${{ secrets.SDK_API_KEY }}
+      - name: platforms
+        run: node bin/bright-sdk.js platforms
+        env:
+          SDK_API_KEY: ${{ secrets.SDK_API_KEY }}
+      - name: fetch (tizen)
+        run: |
+          node bin/bright-sdk.js fetch -p tizen -o /tmp/sdk-e2e
+          ls /tmp/sdk-e2e/sdk
+        env:
+          SDK_API_KEY: ${{ secrets.SDK_API_KEY }}
+      - name: fetch (android, tar.gz)
+        run: |
+          node bin/bright-sdk.js fetch -p android -o /tmp/sdk-e2e-android
+          ls /tmp/sdk-e2e-android/
+        env:
+          SDK_API_KEY: ${{ secrets.SDK_API_KEY }}

@@ -1,0 +1,23 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npx pkg bin/bright-sdk.js --targets node18-linux-x64,node18-macos-x64,node18-macos-arm64,node18-win-x64 --out-path dist --compress Brotli
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/bright-sdk-linux-x64
+            dist/bright-sdk-macos-x64
+            dist/bright-sdk-macos-arm64
+            dist/bright-sdk-win-x64.exe

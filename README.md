@@ -87,9 +87,9 @@ bright-sdk platforms
 
 ### Environment
 
-| Variable      | Required | Description                                                                                                        |
-| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| `SDK_API_KEY` | Yes      | BrightSDK API key for authentication — [get one here](https://bright-sdk.com/cp/settings/company_profile#api_keys) |
+| Variable      | Required | Description                                                                                                   |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `SDK_API_KEY` | Yes      | BrightSDK API key — [how to obtain](https://brightsdk.github.io/bright-sdk-downloader-rs/obtain-api-key.html) |
 
 ## Integration with other tools
 

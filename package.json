@@ -43,7 +43,7 @@
         "brd-ono-util-progress-tracker-cli": "github:BrightSDK/progress-tracker-cli",
         "follow-redirects": "^1.15.6",
         "fs-extra": "^11.2.0",
-        "unzipper": "^0.12.3"
+        "unzipper": "^0.12.5"
     },
     "devDependencies": {
         "c8": "^10.1.0",

@@ -48,6 +48,7 @@ describe('module exports', function () {
         expect(sdk.resolve_url_tpl).to.be.a('function');
         expect(sdk.resolve_sdk).to.be.a('function');
         expect(sdk.download_from_url).to.be.a('function');
+        expect(sdk.verify_file_sha256).to.be.a('function');
         expect(sdk.extract).to.be.a('function');
         expect(sdk.fetch_sdk).to.be.a('function');
         expect(sdk.list_platforms).to.be.a('function');
@@ -56,5 +57,48 @@ describe('module exports', function () {
     it('should export RELEASES_URL constant', function () {
         expect(sdk.RELEASES_URL).to.be.a('string');
         expect(sdk.RELEASES_URL).to.include('bright-sdk.com');
+    });
+});
+
+describe('verify_file_sha256()', function () {
+    const fs = require('fs-extra');
+    const path = require('path');
+    const os = require('os');
+    const crypto = require('crypto');
+    const { verify_file_sha256 } = require('../src/index.js');
+
+    let tmpFile;
+    const content = 'security-test-data';
+    const expectedHash = crypto
+        .createHash('sha256')
+        .update(content)
+        .digest('hex');
+
+    beforeEach(async function () {
+        tmpFile = path.join(os.tmpdir(), `test-sha-${Date.now()}.txt`);
+        await fs.writeFile(tmpFile, content);
+    });
+
+    afterEach(async function () {
+        await fs.remove(tmpFile);
+    });
+
+    it('should resolve when checksum matches', async function () {
+        const hash = await verify_file_sha256(tmpFile, expectedHash);
+        expect(hash).to.equal(expectedHash);
+    });
+
+    it('should reject when checksum does not match', async function () {
+        let err;
+        try {
+            await verify_file_sha256(
+                tmpFile,
+                '0000000000000000000000000000000000000000000000000000000000000000',
+            );
+        } catch (e) {
+            err = e;
+        }
+        expect(err).to.be.an('error');
+        expect(err.message).to.include('SHA-256 mismatch');
     });
 });

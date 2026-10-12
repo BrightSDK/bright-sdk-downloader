@@ -3,6 +3,7 @@
 const https = require('follow-redirects').https;
 const fs = require('fs-extra');
 const { execFileSync } = require('child_process');
+const crypto = require('crypto');
 const path = require('path');
 const { unzip } = require('./unzip.js');
 
@@ -125,6 +126,25 @@ const download_from_url = (url, fname) =>
         });
     });
 
+const verify_file_sha256 = (file_path, expected_sha) =>
+    new Promise((resolve, reject) => {
+        const hash = crypto.createHash('sha256');
+        const stream = fs.createReadStream(file_path);
+        stream.on('data', chunk => hash.update(chunk));
+        stream.on('end', () => {
+            const actual = hash.digest('hex');
+            if (actual.toLowerCase() !== expected_sha.toLowerCase()) {
+                return void reject(
+                    new Error(
+                        `SHA-256 mismatch for ${file_path}: expected ${expected_sha}, got ${actual}`,
+                    ),
+                );
+            }
+            resolve(actual);
+        });
+        stream.on('error', reject);
+    });
+
 const extract = async (archive_path, out_dir) => {
     if (archive_path.endsWith('.tar.gz') || archive_path.endsWith('.tgz'))
         execFileSync('tar', ['-xzf', archive_path, '-C', out_dir]);
@@ -151,6 +171,15 @@ const fetch_sdk = async (
     );
     on_step && on_step('download');
     await download_from_url(resolved.url, archive_path);
+    if (resolved.sha256) {
+        on_step && on_step('verify');
+        try {
+            await verify_file_sha256(archive_path, resolved.sha256);
+        } catch (err) {
+            await fs.remove(archive_path);
+            throw err;
+        }
+    }
     on_step && on_step('extract');
     await extract(archive_path, out_dir);
     await fs.remove(archive_path);
@@ -172,6 +201,7 @@ module.exports = {
     resolve_url_tpl,
     resolve_sdk,
     download_from_url,
+    verify_file_sha256,
     extract,
     fetch_sdk,
     list_platforms,

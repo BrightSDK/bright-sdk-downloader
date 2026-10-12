@@ -52,7 +52,8 @@ const run = async () => {
             tracker.start();
             const steps = {
                 resolve: { name: 'resolve', endPercentage: 5 },
-                download: { name: 'download', endPercentage: 90 },
+                download: { name: 'download', endPercentage: 85 },
+                verify: { name: 'verify', endPercentage: 90 },
                 extract: { name: 'extract', endPercentage: 100 },
             };
             const result = await fetch_sdk(
